@@ -6,4 +6,24 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+path = "src/main.rs"
+name = "zero2prod"
+
 [dependencies]
+# We are using the latest beta release of actix-web
+# that relies on tokio 1.x.x
+# There is _some_ turbulence when working with betas,
+# we are pinning a few other supporting packages to ensure
+# compatibility.
+actix-web = "=4.0.0-beta.5"
+actix-http = "=3.0.0-beta.5"
+actix-service = "=2.0.0-beta.5"
+
+[dev-dependencies]
+actix-rt = "2"
+reqwest = "0.11"
+tokio = "1"
