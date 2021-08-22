@@ -81,6 +81,6 @@ jobs:
           sqlx migrate run
 
       - name: Run cargo-tarpaulin
-          uses: actions-rs/tarpaulin@v0.1
-          with:
-            args: '--ignore-tests --avoid-cfg-tarpaulin'
+        uses: actions-rs/tarpaulin@v0.1
+        with:
+          args: '--ignore-tests --avoid-cfg-tarpaulin'
