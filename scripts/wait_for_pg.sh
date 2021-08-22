@@ -3,14 +3,11 @@
 
 set -e
 
-host="$1"
-shift
-
-if [ -f .env ]
-then
-  export $(cat .env | sed 's/#.*//g' | xargs)
-fi
 
 
+until PGPASSWORD="postgres" psql -h "localhost:5432" -U "postgres" -c '\q'; do
+  >&2 echo "Postgres is unavailable - sleeping"
+  sleep 1
+done
 
 >&2 echo "Postgres is up - executing command"
