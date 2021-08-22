@@ -13,18 +13,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           override: true
+
       - name: Cache sqlx-cli
         uses: actions/cache@v2
         id: cache-sqlx
-          with:
-            path: |
-              ~/.cargo/bin/sqlx
-            key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES }}
+        with:
+          path: |
+            ~/.cargo/bin/sqlx
+          key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES }}
+
       - name: Install sqlx-cli
         uses: actions-rs/cargo@v1
         if: steps.cache-sqlx.outputs.cache-hit == false
@@ -37,12 +40,15 @@ jobs:
             --features=${{ env.SQLX_FEATURES }}
             --no-default-features
             --locked
+
       - name: Start Docker Compose
         run: docker-compose up -d
+
       - name: Migrate database
         run: |
           sqlx database create
           sqlx migrate run
+
       - uses: actions-rs/cargo@v1
         with:
           command: test
@@ -52,11 +58,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
           components: rustfmt
+
       - uses: actions-rs/cargo@v1
         with:
           command: fmt
@@ -67,11 +75,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
           components: clippy
+
       - uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -93,25 +103,27 @@ jobs:
       - name: Cache sqlx-cli
         uses: actions/cache@v2
         id: cache-sqlx
-          with:
-            path: |
-              ~/.cargo/bin/sqlx
-            key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES }}
-          - name: Install sqlx-cli
-            uses: actions-rs/cargo@v1
-            if: steps.cache-sqlx.outputs.cache-hit == false
-            with:
-              command: install
-              args: >
-                sqlx-cli
-                --force
-                --version=${{ env.SQLX_VERSION }}
-                --features=${{ env.SQLX_FEATURES }}
-                --no-default-features
-                --locked
+        with:
+          path: |
+            ~/.cargo/bin/sqlx
+          key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES }}
+
+      - name: Install sqlx-cli
+        uses: actions-rs/cargo@v1
+        if: steps.cache-sqlx.outputs.cache-hit == false
+        with:
+          command: install
+          args: >
+            sqlx-cli
+            --force
+            --version=${{ env.SQLX_VERSION }}
+            --features=${{ env.SQLX_FEATURES }}
+            --no-default-features
+            --locked
 
       - name: Start Docker Compose
         run: docker-compose up -d
+
       - name: Migrate database
         run: |
           sqlx database create
