@@ -16,6 +16,14 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
+      - name: Start Docker Compose
+        run: docker-compose up -d
+      - name: Migrate database
+        run: |
+          sudo apt-get install libpq-dev -y
+          cargo install --version=0.5.5 --locked sqlx-cli --no-default-features --features postgres
+          sqlx database create
+          sqlx migrate run
       - uses: actions-rs/cargo@v1
         with:
           command: test
