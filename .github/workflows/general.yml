@@ -44,7 +44,7 @@ jobs:
       - name: Start Docker Compose
         run: |
           docker-compose up -d
-          until docker inspect --format "{{json .State.Health.Status }}" postgres|\
+          until docker inspect --format "{{json .State.Health.Status }}" zero2prod_postgres_1|\
           grep -m 1 "healthy"; do sleep 1 ; done
 
       - name: Migrate database
@@ -127,7 +127,7 @@ jobs:
       - name: Start Docker Compose
         run: |
           docker-compose up -d
-          until docker inspect --format "{{json .State.Health.Status }}" postgres|\
+          until docker inspect --format "{{json .State.Health.Status }}" zero2prod_postgres_1|\
           grep -m 1 "healthy"; do sleep 1 ; done
 
       - name: Migrate database
