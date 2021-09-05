@@ -19,9 +19,9 @@ name = "zero2prod"
 # There is _some_ turbulence when working with betas,
 # we are pinning a few other supporting packages to ensure
 # compatibility.
-actix-web = "=4.0.0-beta.5"
-actix-http = "=3.0.0-beta.5"
-actix-service = "=2.0.0-beta.5"
+actix-web = "4.0.0-beta.8"
+actix-http = "3.0.0-beta.9"
+actix-service = "2.0.0"
 serde = { version = "1", features = ["derive"]}
 config = "0.11.0"
 uuid = { version = "0.8.1", features = ["v4"] }
