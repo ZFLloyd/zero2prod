@@ -17,17 +17,17 @@ pub fn get_subscriber(
         name,
         std::io::stdout
     );
-    // let tracer = opentelemetry_otlp::new_pipeline()
-    //     .tracing()
-    //     .with_exporter(opentelemetry_otlp::new_exporter().tonic().with_endpoint("http://localhost:9000"))
-    //     .install_batch(opentelemetry::runtime::Tokio)
-    //     .expect("failed to initialize otel tracing pipeline");
-    // let opentelemetry_layer = tracing_opentelemetry::layer().with_tracer(tracer);
+    let tracer = opentelemetry_otlp::new_pipeline()
+        .tracing()
+        .with_exporter(opentelemetry_otlp::new_exporter().tonic().with_endpoint("http://localhost:9000"))
+        .install_batch(opentelemetry::runtime::Tokio)
+        .expect("failed to initialize otel tracing pipeline");
+    let opentelemetry_layer = tracing_opentelemetry::layer().with_tracer(tracer);
     Registry::default()
         .with(env_filter)
         .with(JsonStorageLayer)
         .with(formatting_layer)
-        //.with(opentelemetry_layer)
+        .with(opentelemetry_layer)
 }
 
 
