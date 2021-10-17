@@ -85,6 +85,38 @@ jobs:
           override: true
           components: clippy
 
+      - name: Cache sqlx-cli
+        uses: actions/cache@v2
+        id: cache-sqlx
+        with:
+          path: |
+            ~/.cargo/bin/sqlx
+          key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}-${{ env.SQLX_FEATURES }}
+
+      - name: Install sqlx-cli
+        uses: actions-rs/cargo@v1
+        if: steps.cache-sqlx.outputs.cache-hit == false
+        with:
+          command: install
+          args: >
+            sqlx-cli
+            --force
+            --version=${{ env.SQLX_VERSION }}
+            --features=${{ env.SQLX_FEATURES }}
+            --no-default-features
+            --locked
+
+      - name: Start Docker Compose
+        run: |
+          docker-compose up -d
+          until docker inspect --format "{{json .State.Health.Status }}" zero2prod_postgres_1|\
+          grep -m 1 "healthy"; do sleep 1 ; done
+
+      - name: Migrate database
+        run: |
+          sqlx database create
+          sqlx migrate run
+
       - uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
