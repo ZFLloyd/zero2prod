@@ -3,13 +3,15 @@ use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
 use tracing_subscriber::{layer::SubscriberExt, EnvFilter, Registry};
 use tracing_log::LogTracer;
 use tracing_subscriber::fmt::MakeWriter;
-use opentelemetry::sdk::export::trace::stdout;
 use opentelemetry_otlp::WithExportConfig;
+use opentelemetry::{KeyValue};
+use opentelemetry::sdk::{trace, Resource};
+use opentelemetry::sdk::trace::IdGenerator;
 
 pub fn get_subscriber(
     name: String,
     env_filter: String,
-    sink: impl MakeWriter + Send + Sync + 'static,
+    _sink: impl MakeWriter + Send + Sync + 'static,
 ) -> impl Subscriber + Send + Sync {
     let env_filter = EnvFilter::try_from_default_env()
         .unwrap_or_else(|_| EnvFilter::new(env_filter));
@@ -19,6 +21,11 @@ pub fn get_subscriber(
     );
     let tracer = opentelemetry_otlp::new_pipeline()
         .tracing()
+        .with_trace_config(
+            trace::config()
+                .with_id_generator(IdGenerator::default())
+                .with_resource(Resource::new(vec![KeyValue::new("service.name", "zero2prod")])),
+        )
         .with_exporter(opentelemetry_otlp::new_exporter().tonic().with_endpoint("http://localhost:9000"))
         .install_batch(opentelemetry::runtime::Tokio)
         .expect("failed to initialize otel tracing pipeline");
