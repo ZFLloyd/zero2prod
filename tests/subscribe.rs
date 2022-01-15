@@ -1,6 +1,3 @@
-use sqlx::{Connection, PgConnection};
-use zero2prod::configuration::get_configuration;
-
 mod utils;
 
 #[tokio::test]
