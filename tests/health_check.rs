@@ -1,6 +1,6 @@
 mod utils;
 
-#[actix_rt::test]
+#[tokio::test]
 async fn health_check_works() {
     let test_app = utils::spawn_app().await;
     let client = reqwest::Client::new();

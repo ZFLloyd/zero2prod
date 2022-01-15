@@ -3,7 +3,7 @@ use zero2prod::configuration::get_configuration;
 
 mod utils;
 
-#[actix_rt::test]
+#[tokio::test]
 async fn subscribe_returns_a_200_for_valid_form_data() {
     let test_app = utils::spawn_app().await;
     let client = reqwest::Client::new();
@@ -28,7 +28,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     assert_eq!(saved.name, "le guin");
 }
 
-#[actix_rt::test]
+#[tokio::test]
 async fn subscribe_returns_a_400_when_data_is_missing() {
     let test_app = utils::spawn_app().await;
     let client = reqwest::Client::new();
