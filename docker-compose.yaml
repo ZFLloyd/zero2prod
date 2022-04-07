@@ -20,7 +20,7 @@ services:
     image: jaegertracing/all-in-one:1.17.1
     command: [ "--log-level=debug" ]
     ports:
-      - "10000:16686"
+      - "1000:16686"
 
   otlp-collector:
     image: otel/opentelemetry-collector:latest

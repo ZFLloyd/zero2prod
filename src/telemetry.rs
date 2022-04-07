@@ -1,6 +1,7 @@
-use opentelemetry::sdk::trace::IdGenerator;
+use opentelemetry::sdk::trace::{IdGenerator, Tracer};
 use opentelemetry::sdk::{trace, Resource};
 use opentelemetry::KeyValue;
+use opentelemetry::sdk::propagation::TraceContextPropagator;
 use opentelemetry_otlp::WithExportConfig;
 use tracing::subscriber::{set_global_default, Subscriber};
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
@@ -15,7 +16,25 @@ pub fn get_subscriber(
     let env_filter =
         EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(env_filter));
     let formatting_layer = BunyanFormattingLayer::new(name, std::io::stdout);
-    let tracer = opentelemetry_otlp::new_pipeline()
+
+    let tracer = setup_otel_tracing_pipeline();
+    opentelemetry::global::set_text_map_propagator(TraceContextPropagator::new());
+    let opentelemetry_layer = tracing_opentelemetry::layer().with_tracer(tracer);
+
+    Registry::default()
+        .with(env_filter)
+        .with(JsonStorageLayer)
+        .with(formatting_layer)
+        .with(opentelemetry_layer)
+}
+
+pub fn init_subscriber(subscriber: impl Subscriber + Send + Sync) {
+    LogTracer::init().expect("Failed to set logger");
+    set_global_default(subscriber).expect("Failed to set subscriber");
+}
+
+fn setup_otel_tracing_pipeline() -> Tracer {
+    opentelemetry_otlp::new_pipeline()
         .tracing()
         .with_trace_config(
             trace::config()
@@ -31,16 +50,5 @@ pub fn get_subscriber(
                 .with_endpoint("http://localhost:9000"),
         )
         .install_batch(opentelemetry::runtime::Tokio)
-        .expect("failed to initialize otel tracing pipeline");
-    let opentelemetry_layer = tracing_opentelemetry::layer().with_tracer(tracer);
-    Registry::default()
-        .with(env_filter)
-        .with(JsonStorageLayer)
-        .with(formatting_layer)
-        .with(opentelemetry_layer)
-}
-
-pub fn init_subscriber(subscriber: impl Subscriber + Send + Sync) {
-    LogTracer::init().expect("Failed to set logger");
-    set_global_default(subscriber).expect("Failed to set subscriber");
+        .expect("failed to initialize otel tracing pipeline")
 }
