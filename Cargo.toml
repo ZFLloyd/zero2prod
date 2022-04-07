@@ -36,6 +36,7 @@ tracing-opentelemetry = "0.17.0"
 tracing-actix-web = "0.5.1"
 opentelemetry = { version = "0.17.0", features = ["rt-tokio"] }
 opentelemetry-otlp = "0.10.0"
+unicode-segmentation = "1"
 
 [dependencies.sqlx]
 version = "0.5.5"
