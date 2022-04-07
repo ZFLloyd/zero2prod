@@ -18,5 +18,5 @@ RUN cargo build --release --bin zero2prod
 FROM debian:bullseye-slim AS runtime
 WORKDIR /app
 COPY --from=builder /app/target/release/zero2prod zero2prod
-COPY configuration.yaml configuration.yaml
+COPY configuration/base.yaml configuration.yaml
 ENTRYPOINT ["./zero2prod"]

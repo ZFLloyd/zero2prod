@@ -22,6 +22,7 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 # compatibility.
 actix-web = "4"
 serde = { version = "1.0.115", features = ["derive"]}
+serde-aux = "3"
 config = "0.11.0"
 uuid = { version = "0.8.1", features = ["v4"] }
 chrono = "0.4.15"
