@@ -21,11 +21,12 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 # we are pinning a few other supporting packages to ensure
 # compatibility.
 actix-web = "4"
+claim = "0.5"
 secrecy = { version = "0.8", features = ["serde"] }
 serde = { version = "1.0.115", features = ["derive"]}
 serde-aux = "3"
 config = "0.11.0"
-uuid = { version = "0.8.1", features = ["v4"] }
+uuid = { version = "1", features = ["v4", "serde"] }
 chrono = "0.4.15"
 tracing = { version = "0.1.19", features = ["log"] }
 tracing-futures = "0.2.5"
@@ -37,9 +38,10 @@ tracing-actix-web = "0.5.1"
 opentelemetry = { version = "0.17.0", features = ["rt-tokio"] }
 opentelemetry-otlp = "0.10.0"
 unicode-segmentation = "1"
+validator = "0.14"
 
 [dependencies.sqlx]
-version = "0.5.5"
+version = "0.6"
 default-features = false
 features = [
     "runtime-actix-rustls",
