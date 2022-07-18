@@ -56,7 +56,7 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
 
 #[tokio::test]
 async fn subscribe_returns_a_400_when_fields_are_present_but_invalid() {
-// Arrange
+    // Arrange
     let app = utils::spawn_app().await;
     let client = reqwest::Client::new();
     let test_cases = vec![
@@ -65,7 +65,7 @@ async fn subscribe_returns_a_400_when_fields_are_present_but_invalid() {
         ("name=Ursula&email=definitely-not-an-email", "invalid email"),
     ];
     for (body, description) in test_cases {
-// Act
+        // Act
         let response = client
             .post(&format!("{}/subscriptions", &app.address))
             .header("Content-Type", "application/x-www-form-urlencoded")
@@ -73,7 +73,7 @@ async fn subscribe_returns_a_400_when_fields_are_present_but_invalid() {
             .send()
             .await
             .expect("Failed to execute request.");
-// Assert
+        // Assert
         assert_eq!(
             400,
             response.status().as_u16(),

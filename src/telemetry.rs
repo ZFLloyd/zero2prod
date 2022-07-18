@@ -1,7 +1,7 @@
+use opentelemetry::sdk::propagation::TraceContextPropagator;
 use opentelemetry::sdk::trace::{IdGenerator, Tracer};
 use opentelemetry::sdk::{trace, Resource};
 use opentelemetry::KeyValue;
-use opentelemetry::sdk::propagation::TraceContextPropagator;
 use opentelemetry_otlp::WithExportConfig;
 use tracing::subscriber::{set_global_default, Subscriber};
 use tracing_bunyan_formatter::{BunyanFormattingLayer, JsonStorageLayer};
